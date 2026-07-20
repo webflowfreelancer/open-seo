@@ -17,6 +17,8 @@ import {
   listGscSites,
   setGscSite,
 } from "@/serverFunctions/gsc";
+import { useAccessProfile } from "@/client/features/auth/useAccessProfile";
+import { canManageWorkspace } from "@/shared/access";
 
 const GRANT_STATUS_KEY = ["gscGrantStatus"];
 
@@ -26,6 +28,8 @@ export function SearchConsoleConnectionCard({
   projectId: string;
 }) {
   const hosted = isHostedClientAuthMode();
+  const accessQuery = useAccessProfile();
+  const canManage = canManageWorkspace(accessQuery.data?.role ?? "user");
   const queryClient = useQueryClient();
   const [picking, setPicking] = React.useState(false);
   const [selection, setSelection] = React.useState<GscSiteSelection | null>(
@@ -42,7 +46,8 @@ export function SearchConsoleConnectionCard({
   const selfHostedNeedsSetup =
     !hosted && connectionQuery.isSuccess && !connection?.googleOAuthConfigured;
 
-  const showPicker = picking || (connection?.currentUserHasGrant && !connected);
+  const showPicker =
+    canManage && (picking || (connection?.currentUserHasGrant && !connected));
   const sitesQuery = useQuery({
     queryKey: ["gscSites", projectId],
     queryFn: () => listGscSites({ data: { projectId } }),
@@ -153,6 +158,10 @@ export function SearchConsoleConnectionCard({
           <span className="loading loading-spinner loading-sm" />
           Checking…
         </div>
+      ) : !canManage && !connected ? (
+        <p className="text-sm text-base-content/70">
+          A Clarity SEO Admin can connect Search Console for this project.
+        </p>
       ) : selfHostedNeedsSetup ? (
         <SelfHostedSetupWarning />
       ) : connected && !picking ? (
@@ -165,6 +174,7 @@ export function SearchConsoleConnectionCard({
           }}
           onDisconnect={() => disconnectMutation.mutate()}
           disconnecting={disconnectMutation.isPending}
+          canManage={canManage}
         />
       ) : showPicker ? (
         <SitePicker
@@ -279,12 +289,14 @@ function ConnectedState({
   onChange,
   onDisconnect,
   disconnecting,
+  canManage,
 }: {
   siteUrl: string;
   connectedByEmail: string | null;
   onChange: () => void;
   onDisconnect: () => void;
   disconnecting: boolean;
+  canManage: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -301,23 +313,25 @@ function ConnectedState({
           ) : null}
         </div>
       </div>
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={onChange}
-        >
-          Change property
-        </button>
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm text-error hover:bg-error/10"
-          onClick={onDisconnect}
-          disabled={disconnecting}
-        >
-          Disconnect
-        </button>
-      </div>
+      {canManage ? (
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={onChange}
+          >
+            Change property
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm text-error hover:bg-error/10"
+            onClick={onDisconnect}
+            disabled={disconnecting}
+          >
+            Disconnect
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

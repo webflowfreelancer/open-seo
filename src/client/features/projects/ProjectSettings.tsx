@@ -16,14 +16,45 @@ import {
   updateProject,
 } from "@/serverFunctions/projects";
 import type { ProjectSummary } from "./types";
+import { useAccessProfile } from "@/client/features/auth/useAccessProfile";
+import { canManageWorkspace } from "@/shared/access";
 
 export function ProjectSettings({ projectId }: { projectId: string }) {
+  const accessQuery = useAccessProfile();
   const projectsQuery = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
   });
   const projects = projectsQuery.data ?? [];
   const project = projects.find((entry) => entry.id === projectId) ?? null;
+
+  if (accessQuery.isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <span className="loading loading-spinner loading-md" />
+      </div>
+    );
+  }
+
+  if (!canManageWorkspace(accessQuery.data?.role ?? "user")) {
+    return (
+      <div className="mx-auto w-full max-w-2xl p-4 py-8 sm:p-6 md:py-12">
+        <div className="rounded-lg border border-base-300 bg-base-200/40 p-5">
+          <h1 className="text-lg font-semibold">Admin access required</h1>
+          <p className="mt-2 text-sm text-base-content/60">
+            Ask a Clarity SEO Admin to change project settings or integrations.
+          </p>
+          <Link
+            to="/p/$projectId"
+            params={{ projectId }}
+            className="btn btn-primary btn-sm mt-4"
+          >
+            Back to project
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (

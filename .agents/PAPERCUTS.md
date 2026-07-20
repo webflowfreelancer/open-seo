@@ -19,3 +19,5 @@ data, or sensitive paths.
 ## Resolved
 
 Move fixed entries here, mark them checked, and append the resolving date or commit.
+
+- [x] `2026-07-20T18:39:13Z` — `codex` — A fresh `pnpm install --frozen-lockfile` installs dependencies but exits nonzero with `ERR_PNPM_IGNORED_BUILDS` because required native build scripts are not recorded in the repository policy. Resolved 2026-07-20 by committing an explicit allow/deny build-script policy; frozen install and `pnpm ci:check` both pass.

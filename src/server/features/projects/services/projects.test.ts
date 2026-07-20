@@ -79,6 +79,16 @@ describe("project service", () => {
     });
   });
 
+  describe("listProjectsForRole", () => {
+    it("does not let a User implicitly create the shared organization's first project", async () => {
+      mocks.listProjects.mockResolvedValue([]);
+      const { listProjectsForRole } = await import("./projects");
+
+      await expect(listProjectsForRole("org_1", "user")).resolves.toEqual([]);
+      expect(mocks.tryCreateDefaultProject).not.toHaveBeenCalled();
+    });
+  });
+
   describe("createProject", () => {
     it("returns the full created project", async () => {
       mocks.createProject.mockResolvedValue(namedProject);

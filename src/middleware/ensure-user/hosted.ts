@@ -33,6 +33,7 @@ export async function resolveHostedContext(
       userEmail: session.user.email,
       emailVerified: session.user.emailVerified ?? false,
       organizationId: activeOrganizationId,
+      role: "admin",
     };
   }
 
@@ -52,5 +53,6 @@ export async function resolveHostedContext(
     userEmail: session.user.email,
     emailVerified: session.user.emailVerified ?? false,
     organizationId,
+    role: "admin",
   };
 }

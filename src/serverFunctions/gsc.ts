@@ -9,6 +9,8 @@ import { captureServerEvent } from "@/server/lib/posthog";
 import { getPublicOrigin } from "@/server/mcp/public-origin";
 import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
 import {
+  requireAdminContext,
+  requireAdminProjectContext,
   requireAuthenticatedContext,
   requireProjectContext,
 } from "@/serverFunctions/middleware";
@@ -53,7 +55,7 @@ export const getGscConnection = createServerFn({ method: "POST" })
   });
 
 export const listGscSites = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(projectScopedSchema)
   .handler(async ({ context }) => {
     const [siteList, connection] = await Promise.all([
@@ -86,7 +88,7 @@ export const listGscSites = createServerFn({ method: "POST" })
   });
 
 export const setGscSite = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(setSiteSchema)
   .handler(async ({ data, context }) => {
     const connection = await GscService.setSite({
@@ -108,7 +110,7 @@ export const setGscSite = createServerFn({ method: "POST" })
   });
 
 export const disconnectGsc = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(projectScopedSchema)
   .handler(async ({ context }) => {
     await GscService.disconnect({
@@ -127,7 +129,7 @@ export const disconnectGsc = createServerFn({ method: "POST" })
   });
 
 export const startSelfHostedGscLink = createServerFn({ method: "POST" })
-  .middleware(requireAuthenticatedContext)
+  .middleware(requireAdminContext)
   .validator(startSelfHostedLinkSchema)
   .handler(async ({ data, context }) => {
     const publicOrigin = getPublicOrigin(getRequest());
