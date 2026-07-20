@@ -1,13 +1,9 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAccessProfile } from "@/serverFunctions/access";
 
-export const accessProfileQueryOptions = () =>
-  queryOptions({
+export function useAccessProfile() {
+  return useQuery({
     queryKey: ["accessProfile"],
     queryFn: () => getAccessProfile(),
-    staleTime: Infinity,
   });
-
-export function useAccessProfile() {
-  return useQuery(accessProfileQueryOptions());
 }

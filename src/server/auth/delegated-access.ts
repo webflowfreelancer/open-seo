@@ -13,6 +13,20 @@ function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
+export function isDelegatedEmailAllowed(
+  userEmail: string,
+  allowedDomain: string | undefined,
+) {
+  const domain = allowedDomain?.trim().toLowerCase().replace(/^@/, "");
+  if (!domain) return true;
+
+  const [localPart, emailDomain, ...extraParts] =
+    normalizeEmail(userEmail).split("@");
+  return (
+    Boolean(localPart) && emailDomain === domain && extraParts.length === 0
+  );
+}
+
 function getAdminEmails(value: string | undefined) {
   return new Set(
     (value ?? "").split(/[,\n]/).map(normalizeEmail).filter(Boolean),

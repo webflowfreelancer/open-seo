@@ -34,8 +34,8 @@ vi.mock("@/server/features/projects/services/ProjectService", () => ({
 
 const authContext = {
   userId: "user_123",
-  userEmail: "alice@example.com",
-  organizationId: "org_123",
+  userEmail: "alice@claritymessaging.com",
+  organizationId: "clarity-messaging",
   clientId: "client_123",
   scopes: ["mcp"],
   audience: "https://open-seo.test/mcp",

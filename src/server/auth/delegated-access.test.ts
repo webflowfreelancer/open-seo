@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveDelegatedAccess } from "./delegated-access";
+import {
+  isDelegatedEmailAllowed,
+  resolveDelegatedAccess,
+} from "./delegated-access";
 
 describe("resolveDelegatedAccess", () => {
   it("places every admitted identity in the same organization and assigns Admin by email", () => {
@@ -21,5 +24,26 @@ describe("resolveDelegatedAccess", () => {
       organizationName: "Clarity Messaging",
       role: "user",
     });
+  });
+
+  it("admits only the exact configured email domain", () => {
+    expect(
+      isDelegatedEmailAllowed(
+        " Pat@ClarityMessaging.com ",
+        "claritymessaging.com",
+      ),
+    ).toBe(true);
+    expect(
+      isDelegatedEmailAllowed(
+        "pat@agency.claritymessaging.com",
+        "claritymessaging.com",
+      ),
+    ).toBe(false);
+    expect(
+      isDelegatedEmailAllowed(
+        "pat@claritymessaging.com.example",
+        "claritymessaging.com",
+      ),
+    ).toBe(false);
   });
 });

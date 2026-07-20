@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { AppError } from "@/server/lib/errors";
+import { isDelegatedEmailAllowed } from "@/server/auth/delegated-access";
 import { resolveDelegatedContext } from "./delegated";
 import type { EnsuredUserContext } from "./types";
 
@@ -74,6 +75,9 @@ export async function resolveCloudflareAccessContext(
     const userEmail = typeof payload.email === "string" ? payload.email : null;
 
     if (!userId || !userEmail) {
+      throw new AppError("UNAUTHENTICATED");
+    }
+    if (!isDelegatedEmailAllowed(userEmail, env.ALLOWED_EMAIL_DOMAIN)) {
       throw new AppError("UNAUTHENTICATED");
     }
 

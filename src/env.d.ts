@@ -19,6 +19,7 @@ declare namespace Cloudflare {
     DELEGATED_ORGANIZATION_ID?: string;
     DELEGATED_ORGANIZATION_NAME?: string;
     ADMIN_EMAILS?: string;
+    ALLOWED_EMAIL_DOMAIN?: string;
     POSTHOG_PUBLIC_KEY?: string;
     POSTHOG_HOST?: string;
     BETTER_AUTH_SECRET?: string;

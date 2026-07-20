@@ -15,8 +15,8 @@ vi.mock("@/server/features/projects/services/ProjectService", () => ({
 
 const authContext = {
   userId: "user_123",
-  userEmail: "alice@example.com",
-  organizationId: "org_123",
+  userEmail: "alice@claritymessaging.com",
+  organizationId: "clarity-messaging",
   clientId: "client_123",
   scopes: ["mcp"],
   audience: "https://open-seo.test/mcp",
@@ -51,7 +51,7 @@ describe("withMcpProjectAuth", () => {
     });
   });
 
-  it("checks project access for the authenticated organization", async () => {
+  it("checks shared project access for the authenticated organization", async () => {
     const { withMcpProjectAuth } = await import("@/server/mcp/project-auth");
     const handler = vi.fn().mockResolvedValue("ok");
 
@@ -61,7 +61,7 @@ describe("withMcpProjectAuth", () => {
     ).resolves.toBe("ok");
 
     expect(mocks.getProjectForOrganization).toHaveBeenCalledWith(
-      "org_123",
+      "clarity-messaging",
       "project_123",
     );
   });
@@ -78,8 +78,8 @@ describe("withMcpProjectAuth", () => {
       {
         auth: {
           userId: "user_123",
-          userEmail: "alice@example.com",
-          organizationId: "org_123",
+          userEmail: "alice@claritymessaging.com",
+          organizationId: "clarity-messaging",
           clientId: "client_123",
           scopes: ["mcp"],
           audience: "https://open-seo.test/mcp",
@@ -88,8 +88,8 @@ describe("withMcpProjectAuth", () => {
         baseUrl: "https://open-seo.test",
         billing: {
           userId: "user_123",
-          userEmail: "alice@example.com",
-          organizationId: "org_123",
+          userEmail: "alice@claritymessaging.com",
+          organizationId: "clarity-messaging",
           projectId: "project_123",
         },
         project: {

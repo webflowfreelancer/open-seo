@@ -93,12 +93,14 @@ describe("handleSelfHostedOpenSeoMcpRequest", () => {
     selfHostedAuthMocks.resolveLocalNoAuthContext.mockResolvedValue({
       userId: "local-admin",
       userEmail: "admin@localhost",
-      organizationId: "delegated-local-admin",
+      organizationId: "clarity-messaging",
+      role: "admin",
     });
     selfHostedAuthMocks.resolveCloudflareAccessContext.mockResolvedValue({
       userId: "cloudflare-user",
-      userEmail: "person@example.com",
-      organizationId: "delegated-cloudflare-user",
+      userEmail: "person@claritymessaging.com",
+      organizationId: "clarity-messaging",
+      role: "user",
     });
   });
 
@@ -121,7 +123,7 @@ describe("handleSelfHostedOpenSeoMcpRequest", () => {
     ).toMatchObject({
       userId: "local-admin",
       userEmail: "admin@localhost",
-      organizationId: "delegated-local-admin",
+      organizationId: "clarity-messaging",
       clientId: null,
       scopes: [],
       audience: "https://open-seo.test/mcp",
@@ -130,7 +132,7 @@ describe("handleSelfHostedOpenSeoMcpRequest", () => {
     });
   });
 
-  it("accepts Cloudflare Access MCP requests through the existing Access resolver", async () => {
+  it("accepts a shared-organization User through the Cloudflare Access resolver", async () => {
     const { handleSelfHostedOpenSeoMcpRequest } =
       await import("@/server/mcp/transport");
 
@@ -150,8 +152,8 @@ describe("handleSelfHostedOpenSeoMcpRequest", () => {
       body.options.authContext?.props[MCP_AUTH_CONTEXT_PROP],
     ).toMatchObject({
       userId: "cloudflare-user",
-      userEmail: "person@example.com",
-      organizationId: "delegated-cloudflare-user",
+      userEmail: "person@claritymessaging.com",
+      organizationId: "clarity-messaging",
       clientId: null,
       scopes: [],
       audience: "https://open-seo.test/mcp",
