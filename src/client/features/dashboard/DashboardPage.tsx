@@ -25,6 +25,8 @@ import {
 } from "@/serverFunctions/dashboard";
 import { setProjectDomain } from "@/serverFunctions/projects";
 import type { DashboardHeroStep } from "@/types/schemas/dashboard";
+import { useAccessProfile } from "@/client/features/auth/useAccessProfile";
+import { canManageWorkspace } from "@/shared/access";
 
 const HERO_COPY: Record<
   DashboardHeroStep,
@@ -232,6 +234,8 @@ function OnboardingChecklist({
 
 export function DashboardPage({ projectId }: { projectId: string }) {
   const queryClient = useQueryClient();
+  const accessQuery = useAccessProfile();
+  const canManage = canManageWorkspace(accessQuery.data?.role ?? "user");
 
   const activationQuery = useQuery({
     queryKey: ["dashboardActivation", projectId],
@@ -300,7 +304,9 @@ export function DashboardPage({ projectId }: { projectId: string }) {
       <div className="mx-auto flex max-w-5xl flex-col gap-5">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
 
-        <OnboardingChecklist projectId={projectId} activation={activation} />
+        {canManage ? (
+          <OnboardingChecklist projectId={projectId} activation={activation} />
+        ) : null}
 
         {/* Every card is half width on large screens (only the checklist spans).
           Cards with data render before setup pitches and empty states. */}

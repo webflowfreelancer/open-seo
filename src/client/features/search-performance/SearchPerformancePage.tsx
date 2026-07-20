@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { TableExportMenu } from "@/client/components/table/TableBulkActionBar";
 import { TablePagination } from "@/client/components/table/TablePagination";
 import { SearchConsoleConnectionCard } from "@/client/features/gsc/SearchConsoleConnectionCard";
+import { useAccessProfile } from "@/client/features/auth/useAccessProfile";
 import { SearchPerformanceLoadingState } from "@/client/features/search-performance/SearchPerformanceLoadingState";
 import {
   DimensionTable,
@@ -37,6 +38,7 @@ import {
   type SearchPerformanceDevice,
   type SearchPerformanceTableDimension,
 } from "@/types/schemas/search-performance";
+import { canManageWorkspace } from "@/shared/access";
 
 const RANGE_LABELS: Record<SearchPerformanceDateRange, string> = {
   last_7_days: "Last 7 days",
@@ -118,6 +120,8 @@ function tableQueryOptions(
 }
 
 export function SearchPerformancePage({ projectId }: { projectId: string }) {
+  const accessQuery = useAccessProfile();
+  const canManage = canManageWorkspace(accessQuery.data?.role ?? "user");
   const queryClient = useQueryClient();
   const [range, setRange] =
     useState<SearchPerformanceDateRange>("last_28_days");
@@ -199,7 +203,7 @@ export function SearchPerformancePage({ projectId }: { projectId: string }) {
               Google Search Console.
             </p>
           </div>
-          {report?.connected ? (
+          {report?.connected && canManage ? (
             <Link
               to="/p/$projectId/settings"
               params={{ projectId }}

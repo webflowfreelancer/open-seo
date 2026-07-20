@@ -11,6 +11,8 @@ import {
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import { getLastProjectId } from "@/client/lib/active-project";
 import { CreateProjectModal } from "@/client/features/projects/CreateProjectModal";
+import { useAccessProfile } from "@/client/features/auth/useAccessProfile";
+import { canManageWorkspace } from "@/shared/access";
 
 export const Route = createFileRoute("/_app/projects")({
   component: ProjectsPage,
@@ -18,6 +20,8 @@ export const Route = createFileRoute("/_app/projects")({
 
 function ProjectsPage() {
   const [creating, setCreating] = React.useState(false);
+  const accessQuery = useAccessProfile();
+  const canManage = canManageWorkspace(accessQuery.data?.role ?? "user");
   // Read after mount to keep SSR/first render stable.
   const [currentProjectId, setCurrentProjectId] = React.useState<string | null>(
     null,
@@ -42,14 +46,16 @@ function ProjectsPage() {
               rank tracking, and audits.
             </p>
           </div>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm shrink-0"
-            onClick={() => setCreating(true)}
-          >
-            <Plus className="size-4" />
-            New project
-          </button>
+          {canManage ? (
+            <button
+              type="button"
+              className="btn btn-primary btn-sm shrink-0"
+              onClick={() => setCreating(true)}
+            >
+              <Plus className="size-4" />
+              New project
+            </button>
+          ) : null}
         </div>
 
         {projectsQuery.isLoading ? (
@@ -61,7 +67,7 @@ function ProjectsPage() {
             {projects.map((project) => (
               <li key={project.id}>
                 <Link
-                  to="/p/$projectId/settings"
+                  to={canManage ? "/p/$projectId/settings" : "/p/$projectId"}
                   params={{ projectId: project.id }}
                   className="flex items-center justify-between gap-3 p-3 transition-colors hover:bg-base-200/40"
                 >
@@ -87,10 +93,10 @@ function ProjectsPage() {
           </ul>
         )}
 
-        <ArchivedProjects />
+        {canManage ? <ArchivedProjects /> : null}
       </div>
 
-      {creating ? (
+      {canManage && creating ? (
         <CreateProjectModal onClose={() => setCreating(false)} />
       ) : null}
     </div>

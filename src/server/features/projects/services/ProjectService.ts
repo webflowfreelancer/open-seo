@@ -4,6 +4,7 @@ import {
   getProjectForOrganization,
   listArchivedProjects,
   listProjects,
+  listProjectsForRole,
   listProjectsEnsuringOne,
   restoreProject,
   setProjectDomain,
@@ -13,6 +14,7 @@ import {
 
 export const ProjectService = {
   listProjects,
+  listProjectsForRole,
   listProjectsEnsuringOne,
   createProject,
   updateProject,

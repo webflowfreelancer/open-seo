@@ -16,6 +16,9 @@ declare namespace Cloudflare {
     BYPASS_EMAIL_VERIFICATION?: string;
     TEAM_DOMAIN?: string;
     POLICY_AUD?: string;
+    DELEGATED_ORGANIZATION_ID?: string;
+    DELEGATED_ORGANIZATION_NAME?: string;
+    ADMIN_EMAILS?: string;
     POSTHOG_PUBLIC_KEY?: string;
     POSTHOG_HOST?: string;
     BETTER_AUTH_SECRET?: string;

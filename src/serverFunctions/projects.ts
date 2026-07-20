@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { ProjectService } from "@/server/features/projects/services/ProjectService";
 import {
+  requireAdminContext,
+  requireAdminProjectContext,
   requireAuthenticatedContext,
-  requireProjectContext,
 } from "@/serverFunctions/middleware";
 import {
   archiveProjectSchema,
@@ -19,52 +20,52 @@ const projectScopedSchema = z.object({ projectId: z.string().min(1) });
 export const getProjects = createServerFn({ method: "POST" })
   .middleware(requireAuthenticatedContext)
   .handler(async ({ context }) =>
-    ProjectService.listProjectsEnsuringOne(context.organizationId),
+    ProjectService.listProjectsForRole(context.organizationId, context.role),
   );
 
 export const createProject = createServerFn({ method: "POST" })
-  .middleware(requireAuthenticatedContext)
+  .middleware(requireAdminContext)
   .validator(createProjectSchema)
   .handler(async ({ data, context }) =>
     ProjectService.createProject(context.organizationId, data),
   );
 
 export const updateProject = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(updateProjectSchema)
   .handler(async ({ data, context }) =>
     ProjectService.updateProject(context.organizationId, data),
   );
 
 export const setProjectDomain = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(setProjectDomainSchema)
   .handler(async ({ data, context }) =>
     ProjectService.setProjectDomain(context.organizationId, data),
   );
 
 export const setProjectMarket = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(setProjectMarketSchema)
   .handler(async ({ data, context }) =>
     ProjectService.setProjectMarket(context.organizationId, data),
   );
 
 export const archiveProject = createServerFn({ method: "POST" })
-  .middleware(requireProjectContext)
+  .middleware(requireAdminProjectContext)
   .validator(archiveProjectSchema)
   .handler(async ({ data, context }) =>
     ProjectService.archiveProject(context.organizationId, data),
   );
 
 export const getArchivedProjects = createServerFn({ method: "POST" })
-  .middleware(requireAuthenticatedContext)
+  .middleware(requireAdminContext)
   .handler(async ({ context }) =>
     ProjectService.listArchivedProjects(context.organizationId),
   );
 
 export const restoreProject = createServerFn({ method: "POST" })
-  .middleware(requireAuthenticatedContext)
+  .middleware(requireAdminContext)
   .validator(restoreProjectSchema)
   .handler(async ({ data, context }) =>
     ProjectService.restoreProject(context.organizationId, data),

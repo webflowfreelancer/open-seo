@@ -11,6 +11,7 @@ import { normalizeBacklinksTarget } from "@/server/lib/dataforseoBacklinksTarget
 import { AppError } from "@/server/lib/errors";
 import { assertLanguageForLocation } from "@/server/lib/market";
 import { getLanguageCode } from "@/shared/keyword-locations";
+import type { AccessRole } from "@/shared/access";
 
 function mapProject(project: {
   id: string;
@@ -83,6 +84,12 @@ export async function listProjectsEnsuringOne(organizationId: string) {
 
   await ProjectRepository.tryCreateDefaultProject(organizationId);
   return listProjects(organizationId);
+}
+
+export function listProjectsForRole(organizationId: string, role: AccessRole) {
+  return role === "admin"
+    ? listProjectsEnsuringOne(organizationId)
+    : listProjects(organizationId);
 }
 
 /**

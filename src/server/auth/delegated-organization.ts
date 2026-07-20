@@ -1,32 +1,17 @@
 import { AuthRepository } from "@/server/auth/repositories/AuthRepository";
-import { slugify, toHex } from "./org-slug";
+import { slugify } from "./org-slug";
 
-function getDelegatedOrganizationId(userId: string) {
-  return `delegated-${userId}`;
-}
-
-function getDelegatedOrganizationName(email: string, userId: string) {
-  return `${email.split("@")[0] || userId} workspace`;
-}
-
-function getDelegatedOrganizationSlug(email: string, userId: string) {
-  const slugSource = email.split("@")[0] || userId;
-  return `delegated-${slugify(slugSource)}-${toHex(userId)}`;
-}
-
-export async function ensureDelegatedOrganizationForUser(
-  userId: string,
-  email: string,
-) {
-  const organizationId = getDelegatedOrganizationId(userId);
-  const name = getDelegatedOrganizationName(email, userId);
-  const slug = getDelegatedOrganizationSlug(email, userId);
+export async function ensureDelegatedOrganization(input: {
+  id: string;
+  name: string;
+}) {
+  const slug = `delegated-${slugify(input.id)}`;
 
   await AuthRepository.upsertDelegatedOrganization({
-    id: organizationId,
-    name,
+    id: input.id,
+    name: input.name,
     slug,
   });
 
-  return organizationId;
+  return input.id;
 }

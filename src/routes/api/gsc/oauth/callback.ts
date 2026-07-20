@@ -6,6 +6,7 @@ import { resolveLocalNoAuthContext } from "@/middleware/ensure-user/delegated";
 import { responseForAppError } from "@/server/lib/http-errors";
 import { handleSelfHostedGscOAuthCallback } from "@/server/features/gsc/selfHostedOAuth";
 import { getPublicOrigin } from "@/server/mcp/public-origin";
+import { requireAdminAccess } from "@/server/auth/authorization";
 
 async function resolveSelfHostedContext(request: Request) {
   const authMode = getAuthMode(env.AUTH_MODE);
@@ -21,6 +22,7 @@ async function handleCallbackRequest(request: Request) {
   try {
     const context = await resolveSelfHostedContext(request);
     if (!context) return new Response("Not found", { status: 404 });
+    requireAdminAccess(context);
 
     return await handleSelfHostedGscOAuthCallback({
       request,
