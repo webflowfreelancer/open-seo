@@ -35,12 +35,13 @@ import { Toaster } from "sonner";
 import { queryClient } from "@/client/tanstack-db";
 import { getActiveOrganizationId } from "@/lib/auth-session";
 import { captureRedditConversionEvent } from "@/serverFunctions/redditConversions";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        title: "OpenSEO",
+        title: PRODUCT_NAME,
       },
       {
         charSet: "utf-8",

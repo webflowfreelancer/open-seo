@@ -20,6 +20,7 @@ import {
   MCP_ROUTE,
   withWorkersOAuthMcpScopes,
 } from "@/server/mcp/context";
+import { PRODUCT_MCP_NAME } from "@/shared/product-brand";
 import { normalizeClientRegistrationRequest } from "@/server/mcp/oauth-registration";
 import { getPublicOrigin } from "@/server/mcp/public-origin";
 import { handleAuthenticatedOpenSeoMcpRequest } from "@/server/mcp/transport";
@@ -428,7 +429,7 @@ export function createOpenSeoOAuthProvider(appFetch: AppFetch) {
     refreshTokenTTL: MCP_REFRESH_TOKEN_TTL_SECONDS,
     resourceMetadata: {
       scopes_supported: [...MCP_OAUTH_SCOPES],
-      resource_name: "OpenSEO MCP",
+      resource_name: PRODUCT_MCP_NAME,
     },
     tokenExchangeCallback: ({ props, requestedScope }) => {
       const accessTokenProps = withWorkersOAuthMcpScopes(props, requestedScope);

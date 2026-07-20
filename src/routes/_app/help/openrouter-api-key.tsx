@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 const OPENROUTER_KEYS_URL = "https://openrouter.ai/settings/keys";
 
@@ -16,9 +17,9 @@ function OpenrouterApiKeyHelpPage() {
               Set up your OpenRouter API key
             </h1>
             <p className="text-sm text-base-content/70">
-              OpenSEO needs the <code>OPENROUTER_API_KEY</code> secret before AI
-              features like SAM, the in-app SEO agent, can run. It is optional —
-              everything else in OpenSEO works without it.
+              {PRODUCT_NAME} needs the <code>OPENROUTER_API_KEY</code> secret
+              before AI features like SAM, the in-app SEO agent, can run. It is
+              optional — everything else in {PRODUCT_NAME} works without it.
             </p>
           </div>
         </div>
@@ -55,49 +56,40 @@ function OpenrouterApiKeyHelpPage() {
                 Save the key as the <code>OPENROUTER_API_KEY</code> secret in
                 your environment:
                 <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>Railway: set it in the service Variables tab</li>
                   <li>
-                    Docker self-hosting: <code>.env</code>
+                    Docker self-hosting: set it in <code>.env</code>
                   </li>
-                  <li>Cloudflare: set it in the Workers UI (see below)</li>
                   <li>
                     Local development: <code>.env.local</code>
                   </li>
                 </ul>
               </li>
-              <li>Restart OpenSEO.</li>
+              <li>Redeploy {PRODUCT_NAME}.</li>
             </ol>
           </div>
         </div>
 
         <div className="card bg-base-100 border border-base-300">
           <div className="card-body gap-2 text-sm text-base-content/75">
-            <h2 className="card-title text-base">
-              Cloudflare Workers (Dashboard UI)
-            </h2>
+            <h2 className="card-title text-base">Railway production service</h2>
             <ol className="list-decimal pl-5 space-y-2 text-sm text-base-content/80">
               <li>
-                In Cloudflare, go to <code>Compute</code> -&gt;{" "}
-                <code>Workers &amp; Pages</code>
-                and open your OpenSEO Worker.
+                Open the <code>Clarity SEO</code> service in Railway.
               </li>
               <li>
-                Open <code>Settings</code>.
+                Open the <code>Variables</code> tab.
               </li>
               <li>
-                Go to <code>Variables &amp; Secrets</code> and add a new secret
-                named
-                <code className="mx-1">OPENROUTER_API_KEY</code>.
+                Add <code>OPENROUTER_API_KEY</code> and paste the key.
               </li>
-              <li>Paste your OpenRouter API key and save.</li>
+              <li>Apply the staged change and wait for the redeploy.</li>
             </ol>
 
-            <div className="divider my-1" />
-
-            <p>Or set the same secret from your terminal with:</p>
-            <pre className="p-3 rounded bg-base-200 border border-base-300 overflow-x-auto text-xs">
-              <code>npx wrangler secret put OPENROUTER_API_KEY</code>
-            </pre>
-            <p>Paste your OpenRouter API key when prompted.</p>
+            <p>
+              Keep this value in Railway only. Do not expose it in the browser,
+              chat, source control, or a client project.
+            </p>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { resolveDelegatedAccess } from "@/server/auth/delegated-access";
 import { ensureDelegatedOrganization } from "@/server/auth/delegated-organization";
 import { eq } from "drizzle-orm";
 import type { EnsuredUserContext } from "./types";
+import { PRODUCT_SHORT_NAME } from "@/shared/product-brand";
 
 const LOCAL_ADMIN_USER_ID = "local-admin";
 const LOCAL_ADMIN_EMAIL = "admin@localhost";
@@ -15,7 +16,7 @@ const LOCAL_ADMIN_EMAIL = "admin@localhost";
 // single user table means the OAuth `account` grant and every app table that
 // references `user.id` resolve the same way in all auth modes.
 function deriveUserName(email: string) {
-  return email.split("@")[0] || "OpenSEO";
+  return email.split("@")[0] || PRODUCT_SHORT_NAME;
 }
 
 async function ensureUserRecord(userId: string, userEmail: string) {

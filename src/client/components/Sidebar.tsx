@@ -22,6 +22,7 @@ import { closeDropdown } from "@/client/lib/dropdown";
 import { signOutAndRedirect, useSession } from "@/lib/auth-client";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 import { BILLING_ROUTE } from "@/shared/billing";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 interface SidebarProps {
   projectId: string | null;
@@ -126,7 +127,7 @@ export function Sidebar({ projectId, onNavigate, onClose }: SidebarProps) {
           onClick={onNavigate}
           className="text-base font-semibold text-base-content"
         >
-          OpenSEO
+          {PRODUCT_NAME}
         </Link>
         {onClose ? (
           <button
@@ -238,7 +239,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
     <div className="shrink-0 border-t border-base-300 px-2 py-2 pb-safe">
       <SidebarNavLink
         icon={CircleHelp}
-        label="Help & Community"
+        label="Help & Resources"
         onNavigate={onNavigate}
         linkProps={{ to: "/support" }}
       />

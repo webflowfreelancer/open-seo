@@ -13,27 +13,27 @@ import {
 } from "@/server/mcp/context";
 import { getPublicOrigin } from "@/server/mcp/public-origin";
 import { registerOpenSeoMcpTools } from "@/server/mcp/server";
+import { PRODUCT_MCP_NAME, PRODUCT_NAME } from "@/shared/product-brand";
 
-function createOpenSeoMcpServer() {
+function createOpenSeoMcpServer(publicOrigin: string) {
   const server = new McpServer(
     {
-      name: "OpenSEO MCP",
-      title: "OpenSEO",
+      name: PRODUCT_MCP_NAME,
+      title: PRODUCT_NAME,
       version: "0.0.11",
       description:
         "SEO research tools for AI agents: keyword research and metrics, SERP and local SERP results, domain and backlink analysis, rank tracking, and Google Search Console performance.",
-      websiteUrl: "https://openseo.so",
+      websiteUrl: publicOrigin,
       icons: [
         {
-          src: "https://openseo.so/android-chrome-512x512.png",
+          src: new URL("/android-chrome-512x512.png", publicOrigin).href,
           mimeType: "image/png",
           sizes: ["512x512"],
         },
       ],
     },
     {
-      instructions:
-        "OpenSEO research tools use credits. Proceed with normal focused research, but ask the user for confirmation before planned batches over 2,000 credits.",
+      instructions: `${PRODUCT_NAME} research tools use credits. Proceed with normal focused research, but ask the user for confirmation before planned batches over 2,000 credits.`,
     },
   );
   registerOpenSeoMcpTools(server);
@@ -114,7 +114,7 @@ function handleOpenSeoMcpRequest(
     );
   }
 
-  const server = createOpenSeoMcpServer();
+  const server = createOpenSeoMcpServer(getPublicOrigin(request));
   const handler = createMcpHandler(server, {
     route: MCP_ROUTE,
     enableJsonResponse: true,
