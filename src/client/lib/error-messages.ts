@@ -1,10 +1,10 @@
 import { FREE_MAX_AUDIT_PAGES } from "@/shared/audit-limits";
 import { isErrorCode, type ErrorCode } from "@/shared/error-codes";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 const STANDARD_MESSAGES: Record<ErrorCode, string> = {
   UNAUTHENTICATED: "Please sign in and try again.",
-  AUTH_CONFIG_MISSING:
-    "OpenSEO auth is not configured. Follow the README setup steps for Cloudflare Access.",
+  AUTH_CONFIG_MISSING: `${PRODUCT_NAME} authentication is not configured. Ask a Clarity admin to verify the Cloudflare Access deployment settings.`,
   PAYMENT_REQUIRED:
     "An active hosted subscription is required before you can use OpenSEO.",
   INSUFFICIENT_CREDITS:

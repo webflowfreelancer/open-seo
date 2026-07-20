@@ -5,6 +5,14 @@ import {
 } from "./delegated-access";
 
 describe("resolveDelegatedAccess", () => {
+  it("defaults the shared workspace label to Clarity without renaming its internal id", () => {
+    expect(resolveDelegatedAccess("pat@claritymessaging.com", {})).toEqual({
+      organizationId: "open-seo-shared",
+      organizationName: "Clarity",
+      role: "user",
+    });
+  });
+
   it("places every admitted identity in the same organization and assigns Admin by email", () => {
     const config = {
       organizationId: "clarity-messaging",

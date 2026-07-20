@@ -1,4 +1,5 @@
 import type { AccessRole } from "@/shared/access";
+import { PRODUCT_WORKSPACE_NAME } from "@/shared/product-brand";
 
 type DelegatedAccessConfig = {
   organizationId?: string;
@@ -7,7 +8,7 @@ type DelegatedAccessConfig = {
 };
 
 const DEFAULT_ORGANIZATION_ID = "open-seo-shared";
-const DEFAULT_ORGANIZATION_NAME = "OpenSEO";
+const DEFAULT_ORGANIZATION_NAME = PRODUCT_WORKSPACE_NAME;
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();

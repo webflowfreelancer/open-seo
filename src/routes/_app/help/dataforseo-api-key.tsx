@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 const DATAFORSEO_API_ACCESS_URL = "https://app.dataforseo.com/api-access";
 
@@ -16,8 +17,8 @@ function DataforseoApiKeyHelpPage() {
               Set up your DataForSEO API key
             </h1>
             <p className="text-sm text-base-content/70">
-              OpenSEO needs the <code>DATAFORSEO_API_KEY</code> secret before
-              keyword, domain, and SEO data workflows can run.
+              {PRODUCT_NAME} needs the <code>DATAFORSEO_API_KEY</code> secret
+              before keyword, domain, and SEO data workflows can run.
             </p>
           </div>
         </div>
@@ -55,36 +56,24 @@ function DataforseoApiKeyHelpPage() {
 
         <div className="card bg-base-100 border border-base-300">
           <div className="card-body gap-2 text-sm text-base-content/75">
-            <h2 className="card-title text-base">
-              Cloudflare Workers (Dashboard UI)
-            </h2>
+            <h2 className="card-title text-base">Railway production service</h2>
             <ol className="list-decimal pl-5 space-y-2 text-sm text-base-content/80">
               <li>
-                In Cloudflare, go to <code>Compute</code> -&gt;{" "}
-                <code>Workers &amp; Pages</code>
-                and open your OpenSEO Worker.
+                Open the <code>Clarity SEO</code> service in Railway.
               </li>
               <li>
-                Open <code>Settings</code>.
+                Open the <code>Variables</code> tab.
               </li>
               <li>
-                Go to <code>Variables &amp; Secrets</code> and add a new secret
-                named
-                <code className="mx-1">DATAFORSEO_API_KEY</code>.
+                Add <code>DATAFORSEO_API_KEY</code> and paste the base64 value
+                from the terminal command above.
               </li>
-              <li>
-                Paste the base64 value from the terminal command above and save.
-              </li>
+              <li>Apply the staged change and wait for the redeploy.</li>
             </ol>
 
-            <div className="divider my-1" />
-
-            <p>Or set the same secret from your terminal with:</p>
-            <pre className="p-3 rounded bg-base-200 border border-base-300 overflow-x-auto text-xs">
-              <code>npx wrangler secret put DATAFORSEO_API_KEY</code>
-            </pre>
             <p>
-              Use the base64 value of <code>login:password</code> when prompted.
+              Keep this value in Railway only. Do not paste it into chat, source
+              control, or a client project.
             </p>
           </div>
         </div>

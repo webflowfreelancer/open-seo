@@ -1,6 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { SafeExternalLink } from "@/client/components/SafeExternalLink";
 import { GSC_SELF_HOSTED_SETUP_DOCS_URL } from "@/shared/gsc";
+import { PRODUCT_NAME } from "@/shared/product-brand";
 
 /**
  * Shown in self-hosted deployments that haven't set GOOGLE_CLIENT_ID/SECRET yet
@@ -13,8 +14,8 @@ export function SelfHostedSetupWarning() {
       <div className="space-y-1">
         <p className="font-medium">Google OAuth client not configured</p>
         <p className="text-base-content/70">
-          Add your Google client ID and secret to this OpenSEO deployment before
-          connecting Search Console.
+          Add your Google client ID and secret to this {PRODUCT_NAME} deployment
+          before connecting Search Console.
         </p>
         <SafeExternalLink
           url={GSC_SELF_HOSTED_SETUP_DOCS_URL}

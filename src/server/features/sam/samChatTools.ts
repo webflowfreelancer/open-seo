@@ -30,7 +30,7 @@ import {
 } from "@/server/mcp/tools/search-console-tools";
 import { whoamiTool } from "@/server/mcp/tools/whoami";
 import { discoverSiteUrls, readPages, readSite } from "@/server/lib/scrape";
-import openSeoFactSheet from "@/server/features/onboarding/openseo-fact-sheet.md?raw";
+import clarityProductFactSheet from "@/server/features/sam/clarity-product-fact-sheet.md?raw";
 
 // SAM reads more of a site than the onboarding preview: enough pages to work
 // out what a business does, sells, and positions against on its own.
@@ -209,9 +209,9 @@ export function buildSamMcpTools(
     // made the agent narrate hosted/self-hosted framing at signed-in users).
     get_product_info: tool({
       description:
-        "The OpenSEO fact sheet: what the product does, plans/pricing, credit costs, integrations, MCP setup. Call before answering questions about OpenSEO itself. Uses no credits.",
+        "The Clarity SEO product reference: workspace access, roles, workflows, provider spend, integrations, and MCP setup. Call before answering questions about Clarity SEO itself. Uses no credits.",
       inputSchema: z.object({}),
-      execute: () => Promise.resolve({ factSheet: openSeoFactSheet }),
+      execute: () => Promise.resolve({ factSheet: clarityProductFactSheet }),
     }),
     ...scrapeTools(project.domain),
     whoami: adaptMcpTool(whoamiTool, extra, projectId),

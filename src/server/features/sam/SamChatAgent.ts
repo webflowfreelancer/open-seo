@@ -18,6 +18,7 @@ import { SamProjectMemoryRepository } from "@/server/features/sam/SamProjectMemo
 import { ProjectRepository } from "@/server/features/projects/repositories/ProjectRepository";
 import { buildSamMcpTools } from "@/server/features/sam/samChatTools";
 import { buildSamSystemPrompt } from "@/server/features/sam/samSystemPrompt";
+import { PRODUCT_NAME, PRODUCT_ORIGIN } from "@/shared/product-brand";
 import { buildChatAgentModel } from "@/server/lib/openrouter";
 import {
   getEnvValueSync,
@@ -159,7 +160,7 @@ export class SamChatAgent extends Think {
     return withPgClient(async () => {
       const ctx = await this.loadSamContext();
       if (!ctx) {
-        return "You are SAM, the SEO agent inside OpenSEO. This chat session no longer exists; tell the user to start a new chat.";
+        return `You are SAM, the SEO agent inside ${PRODUCT_NAME}. This chat session no longer exists; tell the user to start a new chat.`;
       }
       const memory = await SamProjectMemoryRepository.getBlock(
         ctx.project.id,
@@ -248,7 +249,7 @@ export class SamChatAgent extends Think {
 
       const baseUrl =
         (await this.ctx.storage.get<string>(PUBLIC_ORIGIN_KEY)) ??
-        "https://app.openseo.so";
+        PRODUCT_ORIGIN;
       const authContext = buildFirstPartyMcpAuthContext({
         userId: ctx.row.userId,
         userEmail: ctx.userEmail,
