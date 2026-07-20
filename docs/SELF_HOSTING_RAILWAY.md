@@ -31,7 +31,7 @@ Configure these in Railway's production environment:
 
 ```text
 AUTH_MODE=cloudflare_access
-ALLOWED_HOST=seo.claritymessaging.com
+ALLOWED_HOST=healthcheck.railway.app
 BETTER_AUTH_URL=https://seo.claritymessaging.com
 TEAM_DOMAIN=https://<team>.cloudflareaccess.com
 POLICY_AUD=<Cloudflare Access application audience>
@@ -41,6 +41,10 @@ ADMIN_EMAILS=<comma-separated admin addresses>
 ALLOWED_EMAIL_DOMAIN=claritymessaging.com
 DATAFORSEO_API_KEY=<base64 login:password>
 ```
+
+Railway sends its startup probe with `Host: healthcheck.railway.app`, so that
+hostname must be the explicit `ALLOWED_HOST`. The public application hostname
+is also allowed because Vite derives it from `BETTER_AUTH_URL`.
 
 The Docker image already defaults
 `CLOUDFLARE_INCLUDE_PROCESS_ENV=true`,
