@@ -23,6 +23,7 @@ import {
   handleAutumnWebhookRequest,
 } from "@/server/billing/autumn-webhook";
 import { maybeSendSelfHostHeartbeat } from "@/server/lib/self-host-telemetry";
+import { HEALTH_CHECK_PATH, handleHealthCheck } from "@/server/health";
 
 const appFetch = createStartHandler(defaultStreamHandler);
 const openSeoOAuthProvider = createOpenSeoOAuthProvider(appFetch);
@@ -138,11 +139,16 @@ function handleFetch(
   env: Env,
   ctx: ExecutionContext,
 ): Response | Promise<Response> {
+  const publicRequest = requestWithPublicOrigin(request);
+  const pathname = new URL(publicRequest.url).pathname;
+
+  if (pathname === HEALTH_CHECK_PATH) {
+    return handleHealthCheck(publicRequest, env.DB);
+  }
+
   ctx.waitUntil(maybeSendSelfHostHeartbeat());
 
   const authMode = getAuthMode(env.AUTH_MODE);
-  const publicRequest = requestWithPublicOrigin(request);
-  const pathname = new URL(publicRequest.url).pathname;
 
   if (pathname.startsWith("/agents/")) {
     return routeChatAgents(publicRequest, env);
