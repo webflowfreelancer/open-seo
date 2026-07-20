@@ -13,11 +13,24 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+# Vite inlines client-visible environment variables while building. This
+# self-host image defaults to the non-hosted Cloudflare Access client surface;
+# local_noauth uses that same client surface, while the Worker reads AUTH_MODE
+# from the runtime environment and enforces the selected policy.
+ARG CLIENT_MODE=cloudflare_access
+ARG VITE_SHOW_DEVTOOLS=false
+
+# Railway mounts persistent volumes only when the container starts. Build the
+# immutable application here, then leave only the D1 migration for startup.
+RUN AUTH_MODE=$CLIENT_MODE VITE_SHOW_DEVTOOLS=$VITE_SHOW_DEVTOOLS NODE_OPTIONS=--max-old-space-size=4096 pnpm run build
+
+# Process env bindings are required by the Cloudflare runtime in Node. Clarity's
+# Railway image opts out of the upstream anonymous self-host heartbeat by default.
+ENV CLOUDFLARE_INCLUDE_PROCESS_ENV=true
+ENV OPENSEO_TELEMETRY_DISABLED=1
+
 EXPOSE 3001
 
-# The build MUST run at container start, not image-build time: AUTH_MODE (and the
-# other client envs) are inlined into the client bundle by `vite build`, and the
-# self-hoster only chooses AUTH_MODE at runtime via Compose. Building here lets
-# that runtime value bake into the bundle. NODE_OPTIONS raises the V8 heap ceiling
-# so the SSR build of ~7400 modules doesn't OOM under Node's ~2GB default.
-CMD ["sh", "-c", "echo 'OpenSEO sends an anonymous usage heartbeat (counts only). Disable: OPENSEO_TELEMETRY_DISABLED=1. Details: docs/SELF_HOSTING_DOCKER.md#telemetry' && pnpm run db:migrate:local && NODE_OPTIONS=--max-old-space-size=4096 pnpm run build && pnpm exec vite preview --host 0.0.0.0 --port ${PORT:-3001}"]
+# Apply migrations after Railway attaches /app/.wrangler, then replace the shell
+# so Vite receives Railway's shutdown signal directly.
+CMD ["sh", "-c", "pnpm run db:migrate:local && exec pnpm exec vite preview --host 0.0.0.0 --port ${PORT:-3001}"]
