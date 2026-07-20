@@ -18,10 +18,12 @@ Keep the service at one replica while it uses local D1/SQLite. A Railway volume
 can be attached to only one running deployment at a time, and multiple
 independent replicas would not share the same database.
 
-The volume is required at startup. The image compiles during Railway's build,
-then the container applies D1 migrations after the volume is mounted and starts
-Vite on `0.0.0.0:$PORT`. Do not move the migration into Railway's pre-deploy
-command: Railway volumes are not mounted during pre-deploy.
+The volume is required at startup. The image compiles during Railway's build
+and retains Vite's immutable deploy metadata outside the mount. At startup the
+container seeds that metadata into Railway's otherwise-empty bind mount, applies
+D1 migrations, and starts Vite on `0.0.0.0:$PORT`. Do not move the migration
+into Railway's pre-deploy command: Railway volumes are not mounted during
+pre-deploy.
 
 ## Required variables
 

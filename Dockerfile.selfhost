@@ -22,7 +22,9 @@ ARG VITE_SHOW_DEVTOOLS=false
 
 # Railway mounts persistent volumes only when the container starts. Build the
 # immutable application here, then leave only the D1 migration for startup.
-RUN AUTH_MODE=$CLIENT_MODE VITE_SHOW_DEVTOOLS=$VITE_SHOW_DEVTOOLS NODE_OPTIONS=--max-old-space-size=4096 pnpm run build
+RUN AUTH_MODE=$CLIENT_MODE VITE_SHOW_DEVTOOLS=$VITE_SHOW_DEVTOOLS NODE_OPTIONS=--max-old-space-size=4096 pnpm run build \
+    && mkdir -p /app/.wrangler-image/deploy \
+    && cp /app/.wrangler/deploy/config.json /app/.wrangler-image/deploy/config.json
 
 # Process env bindings are required by the Cloudflare runtime in Node. Clarity's
 # Railway image opts out of the upstream anonymous self-host heartbeat by default.
@@ -31,6 +33,8 @@ ENV OPENSEO_TELEMETRY_DISABLED=1
 
 EXPOSE 3001
 
-# Apply migrations after Railway attaches /app/.wrangler, then replace the shell
-# so Vite receives Railway's shutdown signal directly.
-CMD ["sh", "-c", "pnpm run db:migrate:local && exec pnpm exec vite preview --host 0.0.0.0 --port ${PORT:-3001}"]
+# Railway bind-mounts an empty volume over /app/.wrangler instead of copying the
+# image's existing files into it. Seed Vite's immutable deploy metadata back
+# into that mount before applying migrations, then replace the shell so Vite
+# receives Railway's shutdown signal directly.
+CMD ["sh", "-c", "mkdir -p /app/.wrangler/deploy && cp /app/.wrangler-image/deploy/config.json /app/.wrangler/deploy/config.json && pnpm run db:migrate:local && exec pnpm exec vite preview --host 0.0.0.0 --port ${PORT:-3001}"]
